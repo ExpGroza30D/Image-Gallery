@@ -4,7 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Gallery</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        #imageLarge img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 10px;
+            transition: opacity 0.3s ease-in-out, transform 0.5s ease-in-out;
+            transform: scale(1);
+            cursor: pointer;
+        }
+
+        #imageCaption {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            margin: 4px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .thumbnails {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-left {
+            left: 10px;
+        }
+
+        .nav-right {
+            right: 10px;
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        @media (max-width: 600px) {
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+                margin: 3px;
+            }
+
+            #imageLarge img {
+                max-height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container" id="imageLarge">
@@ -18,13 +153,79 @@
         <img src="/img/gambar2.jpg" alt="Image 2" class="thumbnail" data-caption="Caption for Image 2">
         <img src="/img/gambar3.jpg" alt="Image 3" class="thumbnail" data-caption="Caption for Image 3">
         <img src="/img/gambar4.jpg" alt="Image 4" class="thumbnail" data-caption="Caption for Image 4">
-        <img src="/img/gambar5.jpg" alt="Image 5" class="thumbnail" data-caption="Caption for Image 5">
-        <img src="/img/gambar6.jpg" alt="Image 6" class="thumbnail" data-caption="Caption for Image 6">
     </div>
     <div class="lightbox" id="lightbox">
         <img id="lightboxImage" src="" alt="Lightbox Image">
         <button class="lightbox-close" id="lightboxClose">&times;</button>
     </div>
-    <script src="js/scripts.js"></script>
+    <script>
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const largeImage = document.getElementById('largeImage');
+        const imageCaption = document.getElementById('imageCaption');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxClose = document.getElementById('lightboxClose');
+        let currentIndex = 0;
+        let slideshowInterval;
+
+        function updateLargeImage(index) {
+            const selectedThumbnail = thumbnails[index];
+            largeImage.style.opacity = 0;
+            largeImage.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                largeImage.src = selectedThumbnail.src;
+                imageCaption.textContent = selectedThumbnail.getAttribute('data-caption');
+                largeImage.style.opacity = 1;
+                largeImage.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function startSlideshow() {
+            slideshowInterval = setInterval(() => {
+                currentIndex = (currentIndex < thumbnails.length - 1) ? currentIndex + 1 : 0;
+                updateLargeImage(currentIndex);
+            }, 3000); // Ganti gambar setiap 3 detik
+        }
+
+        function stopSlideshow() {
+            clearInterval(slideshowInterval);
+        }
+
+        function openLightbox() {
+            lightboxImage.src = largeImage.src;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+        }
+
+        thumbnails.forEach((img, index) => {
+            img.addEventListener('click', function() {
+                currentIndex = index;
+                updateLargeImage(currentIndex);
+                stopSlideshow(); // Hentikan slideshow saat gambar diklik
+            });
+        });
+
+        largeImage.addEventListener('click', openLightbox);
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        prevButton.addEventListener('click', function() {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : thumbnails.length - 1;
+            updateLargeImage(currentIndex);
+            stopSlideshow(); // Hentikan slideshow saat tombol navigasi diklik
+        });
+
+        nextButton.addEventListener('click', function() {
+            currentIndex = (currentIndex < thumbnails.length - 1) ? currentIndex + 1 : 0;
+            updateLargeImage(currentIndex);
+            stopSlideshow(); // Hentikan slideshow saat tombol navigasi diklik
+        });
+
+        startSlideshow(); // Mulai slideshow saat halaman dimuat
+    </script>
 </body>
 </html>
