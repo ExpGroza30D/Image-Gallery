@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container" id="imageLarge">
+        <img src="/img/gambar1.jpg" alt="Large Image" id="largeImage">
+        <div id="imageCaption">Caption for Image 1</div>
+        <button class="nav-button nav-left" id="prevButton">&lt;</button>
+        <button class="nav-button nav-right" id="nextButton">&gt;</button>
+    </div>
+    <div class="thumbnails">
+        <img src="/img/gambar1.jpg" alt="Image 1" class="thumbnail" data-caption="Caption for Image 1">
+        <img src="/img/gambar2.jpg" alt="Image 2" class="thumbnail" data-caption="Caption for Image 2">
+        <img src="/img/gambar3.jpg" alt="Image 3" class="thumbnail" data-caption="Caption for Image 3">
+        <img src="/img/gambar4.jpg" alt="Image 4" class="thumbnail" data-caption="Caption for Image 4">
+        <img src="/img/gambar5.jpg" alt="Image 5" class="thumbnail" data-caption="Caption for Image 5">
+        <img src="/img/gambar6.jpg" alt="Image 6" class="thumbnail" data-caption="Caption for Image 6">
+    </div>
+    <div class="lightbox" id="lightbox">
+        <img id="lightboxImage" src="" alt="Lightbox Image">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+    </div>
+    <script src="js/scripts.js"></script>
+</body>
+</html>
